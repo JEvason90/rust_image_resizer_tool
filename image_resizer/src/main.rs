@@ -4,8 +4,15 @@ use std::error::Error;
 use glob::glob;
 
 fn main() {
-    println!("shrinking files");
-    resize_images_in_directory();
+    let mut done = false; // mut done: bool
+
+    while !done {
+        println!("Shrinking the files... \n");
+        resize_images_in_directory();
+        done = true;
+    }
+
+    println!("Complete");
 }
 
 fn resize_images_in_directory() ->  Result<(), Box<dyn Error>> {
@@ -33,19 +40,14 @@ fn resize_images_in_directory() ->  Result<(), Box<dyn Error>> {
 
         let file_name = file_vec[0];
 
-        println!("{}",file);
-        println!("{}", file_name);
-
         // Do the job
         let img = image::open(&file)?;
 
         let (width, height) = img.dimensions();
 
-        let small_img = img.resize(width, height, image::imageops::FilterType::Lanczos3);
+        let small_img = img.resize(width/10, height/10, image::imageops::FilterType::Lanczos3);
 
         let save_file_name = format!(".\\test_images\\output\\{}.png", file_name);
-        
-        println!("{}", save_file_name);
 
         small_img.save(save_file_name)?;
     }
